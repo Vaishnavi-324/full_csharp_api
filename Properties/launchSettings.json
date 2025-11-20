@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "full_csharp_api": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:64292;http://localhost:64293"
+    }
+  }
+}

@@ -25,10 +25,10 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     msbuildArgs: >
-      /p:DeployOnBuild=true 
-      /p:WebPublishMethod=Package 
-      /p:PackageAsSingleFile=true 
-      /p:SkipInvalidConfigurations=true 
+      /p:DeployOnBuild=true
+      /p:WebPublishMethod=Package
+      /p:PackageAsSingleFile=true
+      /p:SkipInvalidConfigurations=true
       /p:PackageLocation="$(build.artifactStagingDirectory)\WebApp.zip"
 
 # Publish artifacts
@@ -44,7 +44,7 @@ steps:
 - task: AzureWebApp@1
   displayName: "Deploy Web API to Azure App Service"
   inputs:
-    azureSubscription: 'AzureServiceConnection'   # Change this
+    azureSubscription: 'project'   # CHANGE THIS
     appType: 'webApp'
-    appName: 'YOUR_APP_SERVICE_NAME'              # Change this
+    appName: 'backend-api'                    # CHANGE THIS
     package: '$(Pipeline.Workspace)/drop/WebApp.zip'

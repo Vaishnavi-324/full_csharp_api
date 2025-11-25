@@ -1,0 +1,50 @@
+trigger:
+  - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+# Install NuGet
+- task: NuGetToolInstaller@1
+
+# Restore dependencies
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+# Build and package
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    msbuildArgs: >
+      /p:DeployOnBuild=true 
+      /p:WebPublishMethod=Package 
+      /p:PackageAsSingleFile=true 
+      /p:SkipInvalidConfigurations=true 
+      /p:PackageLocation="$(build.artifactStagingDirectory)\WebApp.zip"
+
+# Publish artifacts
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(build.artifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+
+# ---------------------------
+# DEPLOY TO AZURE APP SERVICE
+# ---------------------------
+- task: AzureWebApp@1
+  displayName: "Deploy Web API to Azure App Service"
+  inputs:
+    azureSubscription: 'AzureServiceConnection'   # Change this
+    appType: 'webApp'
+    appName: 'YOUR_APP_SERVICE_NAME'              # Change this
+    package: '$(Pipeline.Workspace)/drop/WebApp.zip'
